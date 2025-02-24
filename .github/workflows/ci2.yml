@@ -1,0 +1,45 @@
+name: Build and Test Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  FILE_NAME: app.txt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine
+    steps:
+      - name: Set up build environment
+        run: |
+          echo "Building my App"
+          mkdir files
+          touch files/$FILE_NAME
+          echo "Ma super app" >> files/$FILE_NAME
+          cat files/$FILE_NAME
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-files
+          path: files/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: alpine
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-files
+          path: files/
+
+      - name: Test my app
+        run: |
+          test -f files/$FILE_NAME

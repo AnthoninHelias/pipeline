@@ -1,0 +1,15 @@
+name: Build Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine
+    steps:
+      - name: Run Build
+        run: echo "build"
